@@ -25,7 +25,7 @@ public:
 };
 
 class Bill {
-private:
+private: 
     static const int MAX_ITEMS = 10; 
     Item items[MAX_ITEMS];           
     int itemCount;                    
@@ -62,7 +62,7 @@ public:
 
 int main() {
     Bill bill;
-
+    
     Item item1("Burger", 10, 55.00);
     Item item2("Pizza", 5, 80.00);
 
