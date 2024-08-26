@@ -9,15 +9,18 @@ private:
     float price;
 
 public:
-    Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0)
-        : name(itemName), quantity(itemQuantity), price(itemPrice) {}
+    Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0) {
+        this->name = itemName;
+        this->quantity = itemQuantity;
+        this->price = itemPrice;
+    }
 
     float getTotalPrice() const {
-        return quantity * price;
+        return this->quantity * this->price;
     }
 
     void displayItem() const {
-        cout << name << " - Quantity: " << quantity << ", Price per unit: ₹" << price << endl;
+        cout << this->name << " - Quantity: " << this->quantity << ", Price per unit: ₹" << this->price << endl;
     }
 };
 
