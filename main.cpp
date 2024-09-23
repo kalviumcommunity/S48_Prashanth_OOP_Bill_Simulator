@@ -7,29 +7,24 @@ private:
     string name;
     int quantity;
     float price;
-
-    static int totalItemsSold;  // Static variable to track total items sold
+    static int totalItemsSold;
 
 public:
-    // Constructor with default arguments
     Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0) {
         this->name = itemName;
         this->quantity = itemQuantity;
         this->price = itemPrice;
-        totalItemsSold += itemQuantity;  // Increment total items sold
+        totalItemsSold += itemQuantity;
     }
 
-    // Function to calculate total price for the item
     float getTotalPrice() const {
         return this->quantity * this->price;
     }
 
-    // Function to display the item details
     void displayItem() const {
         cout << this->name << " - Quantity: " << this->quantity << ", Price per unit: Rs" << this->price << endl;
     }
 
-    // Getter functions for item attributes
     string getName() const {
         return this->name;
     }
@@ -38,53 +33,42 @@ public:
         return this->price;
     }
 
-    int getQuantity() const {
-        return this->quantity;
-    }
-
-    // Function to access the total items sold (using static variable)
-    int getTotalItemsSold() const {
+    static int getTotalItemsSold() {
         return totalItemsSold;
     }
 };
 
-// Initialize static variable
 int Item::totalItemsSold = 0;
 
 class Bill {
 private:
-    Item** items;  // Pointer to dynamically allocated array of Item pointers
+    Item** items;
     int itemCount;
     int capacity;
-
-    static int totalBillsGenerated;  // Static variable to track total bills generated
+    static int totalBillsGenerated;
 
 public:
-    // Constructor with a default capacity
     Bill(int cap = 30) : itemCount(0), capacity(cap) {
-        items = new Item*[capacity];  // Dynamically allocate memory for array of Item pointers
-        totalBillsGenerated++;  // Increment total bills generated
+        items = new Item*[capacity];
+        totalBillsGenerated++;
     }
 
-    // Destructor to clean up dynamically allocated memory
     ~Bill() {
         for (int i = 0; i < itemCount; ++i) {
-            delete items[i];  // Free memory for each Item
+            delete items[i];
         }
-        delete[] items;  // Free memory for the array of pointers
+        delete[] items;
     }
 
-    // Function to add an item to the bill
     void addItem(const Item& item) {
         if (itemCount < capacity) {
-            items[itemCount] = new Item(item);  // Dynamically allocate memory for a new Item
+            items[itemCount] = new Item(item);
             itemCount++;
         } else {
             cout << "Cannot add more items, bill is full!" << endl;
         }
     }
 
-    // Function to calculate the total bill amount
     float calculateTotal() const {
         float total = 0;
         for (int i = 0; i < itemCount; i++) {
@@ -93,7 +77,6 @@ public:
         return total;
     }
 
-    // Function to display the entire bill
     void displayBill() const {
         cout << "\nBill Details:" << endl;
         for (int i = 0; i < itemCount; i++) {
@@ -103,19 +86,16 @@ public:
         cout << "Total Amount: Rs" << total << endl;
     }
 
-    // Function to access the total bills generated (using static variable)
-    int getTotalBillsGenerated() const {
+    static int getTotalBillsGenerated() {
         return totalBillsGenerated;
     }
 };
 
-// Initialize static variable
 int Bill::totalBillsGenerated = 0;
 
 int main() {
-    Bill bill;  // Create a Bill object
+    Bill bill;
 
-    // Dynamically allocate memory for menu items
     Item* menuItems[] = {
         new Item("Burger", 1, 55.00),
         new Item("Pizza", 1, 80.00),
@@ -143,10 +123,9 @@ int main() {
         new Item("Tea", 1, 20.00)
     };
 
-    int menuSize = sizeof(menuItems) / sizeof(menuItems[0]);  // Determine the number of menu items
+    int menuSize = sizeof(menuItems) / sizeof(menuItems[0]);
     int choice, quantity;
 
-    // Start the loop for adding items to the bill
     do {
         cout << "\nSelect an item to add to the bill:" << endl;
         for (int i = 0; i < menuSize; i++) {
@@ -156,7 +135,6 @@ int main() {
         cout << "Enter your choice: ";
         cin >> choice;
 
-        // Add the selected item to the bill
         if (choice >= 1 && choice <= menuSize) {
             cout << "Enter quantity: ";
             cin >> quantity;
@@ -167,14 +145,10 @@ int main() {
 
     } while (choice != menuSize + 1);
 
-    // Display the final bill
     bill.displayBill();
+    cout << "\nTotal items sold: " << Item::getTotalItemsSold() << endl;
+    cout << "Total bills generated: " << Bill::getTotalBillsGenerated() << endl;
 
-    // Display total items sold and total bills generated using the static variables
-    cout << "\nTotal items sold: " << menuItems[0]->getTotalItemsSold() << endl;
-    cout << "Total bills generated: " << bill.getTotalBillsGenerated() << endl;
-
-    // Clean up memory for dynamically allocated menu items
     for (int i = 0; i < menuSize; i++) {
         delete menuItems[i];
     }
