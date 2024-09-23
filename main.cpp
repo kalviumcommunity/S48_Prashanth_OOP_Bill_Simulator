@@ -25,6 +25,14 @@ public:
         cout << this->name << " - Quantity: " << this->quantity << ", Price per unit: Rs" << this->price << endl;
     }
 
+    string getName() const {
+        return this->name;
+    }
+
+    float getPrice() const {
+        return this->price;
+    }
+
     static int getTotalItemsSold() {
         return totalItemsSold;
     }
