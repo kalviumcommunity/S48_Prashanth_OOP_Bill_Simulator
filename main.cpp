@@ -8,12 +8,15 @@ private:
     int quantity;
     float price;
 
+    static int totalItemsSold;  // Static variable to track total items sold
+
 public:
     // Constructor with default arguments
     Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0) {
         this->name = itemName;
         this->quantity = itemQuantity;
         this->price = itemPrice;
+        totalItemsSold += itemQuantity;  // Increment total items sold
     }
 
     // Function to calculate total price for the item
@@ -38,7 +41,15 @@ public:
     int getQuantity() const {
         return this->quantity;
     }
+
+    // Function to access the total items sold (using static variable)
+    int getTotalItemsSold() const {
+        return totalItemsSold;
+    }
 };
+
+// Initialize static variable
+int Item::totalItemsSold = 0;
 
 class Bill {
 private:
@@ -46,10 +57,13 @@ private:
     int itemCount;
     int capacity;
 
+    static int totalBillsGenerated;  // Static variable to track total bills generated
+
 public:
     // Constructor with a default capacity
     Bill(int cap = 30) : itemCount(0), capacity(cap) {
         items = new Item*[capacity];  // Dynamically allocate memory for array of Item pointers
+        totalBillsGenerated++;  // Increment total bills generated
     }
 
     // Destructor to clean up dynamically allocated memory
@@ -88,7 +102,15 @@ public:
         float total = calculateTotal();
         cout << "Total Amount: Rs" << total << endl;
     }
+
+    // Function to access the total bills generated (using static variable)
+    int getTotalBillsGenerated() const {
+        return totalBillsGenerated;
+    }
 };
+
+// Initialize static variable
+int Bill::totalBillsGenerated = 0;
 
 int main() {
     Bill bill;  // Create a Bill object
@@ -147,6 +169,10 @@ int main() {
 
     // Display the final bill
     bill.displayBill();
+
+    // Display total items sold and total bills generated using the static variables
+    cout << "\nTotal items sold: " << menuItems[0]->getTotalItemsSold() << endl;
+    cout << "Total bills generated: " << bill.getTotalBillsGenerated() << endl;
 
     // Clean up memory for dynamically allocated menu items
     for (int i = 0; i < menuSize; i++) {
