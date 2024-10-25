@@ -2,58 +2,40 @@
 #include <string>
 using namespace std;
 
-class Item {
-private:
+class Product {
+protected:
     string name;
-    int quantity;
     float price;
+
+public:
+    Product(string productName = "", float productPrice = 0.0) : name(productName), price(productPrice) {}
+
+    string getName() const { return name; }
+    float getPrice() const { return price; }
+};
+
+class Item : public Product {
+private:
+    int quantity;
     static int totalItemsSold;
 
 public:
-    Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0) {
-        setName(itemName);
-        setQuantity(itemQuantity);
-        setPrice(itemPrice);
+    Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0)
+        : Product(itemName, itemPrice), quantity(itemQuantity) {
         totalItemsSold += itemQuantity;
     }
 
     ~Item() {}
 
-    string getName() const {
-        return name;
-    }
-
-    void setName(const string& itemName) {
-        name = itemName;
-    }
-
-    int getQuantity() const {
-        return quantity;
-    }
+    int getQuantity() const { return quantity; }
 
     void setQuantity(int itemQuantity) {
-        if (itemQuantity >= 0) {
-            quantity = itemQuantity;
-        }
+        if (itemQuantity >= 0) quantity = itemQuantity;
     }
 
-    float getPrice() const {
-        return price;
-    }
+    static int getTotalItemsSold() { return totalItemsSold; }
 
-    void setPrice(float itemPrice) {
-        if (itemPrice >= 0) {
-            price = itemPrice;
-        }
-    }
-
-    static int getTotalItemsSold() {
-        return totalItemsSold;
-    }
-
-    float getTotalPrice() const {
-        return quantity * price;
-    }
+    float getTotalPrice() const { return quantity * price; }
 
     void displayItem() const {
         cout << name << " - Quantity: " << quantity << ", Price per unit: Rs" << price << endl;
@@ -67,7 +49,17 @@ public:
     virtual void display() const = 0;
 };
 
-class Bill : public IBillDisplay {
+class Tax {
+protected:
+    float taxRate;
+
+public:
+    Tax(float rate = 0.1) : taxRate(rate) {}
+
+    float calculateTax(float amount) const { return amount * taxRate; }
+};
+
+class Bill : public IBillDisplay, public Tax {
 private:
     Item** items;
     int itemCount;
@@ -75,41 +67,17 @@ private:
     static int totalBillsGenerated;
 
 public:
-    Bill(int cap = 30) : itemCount(0), capacity(cap) {
+    Bill(int cap = 30) : itemCount(0), capacity(cap), Tax(0.1) {
         items = new Item*[capacity];
         totalBillsGenerated++;
     }
 
     ~Bill() {
-        for (int i = 0; i < itemCount; ++i) {
-            delete items[i];
-        }
+        for (int i = 0; i < itemCount; ++i) delete items[i];
         delete[] items;
     }
 
-    int getItemCount() const {
-        return itemCount;
-    }
-
-    void setItemCount(int count) {
-        if (count >= 0 && count <= capacity) {
-            itemCount = count;
-        }
-    }
-
-    int getCapacity() const {
-        return capacity;
-    }
-
-    void setCapacity(int cap) {
-        if (cap >= 0) {
-            capacity = cap;
-        }
-    }
-
-    static int getTotalBillsGenerated() {
-        return totalBillsGenerated;
-    }
+    int getItemCount() const { return itemCount; }
 
     void addItem(const Item& item) {
         if (itemCount < capacity) {
@@ -125,7 +93,7 @@ public:
         for (int i = 0; i < itemCount; i++) {
             total += items[i]->getTotalPrice();
         }
-        return total;
+        return total + calculateTax(total);
     }
 
     void display() const override {
@@ -134,8 +102,10 @@ public:
             items[i]->displayItem();
         }
         float total = calculateTotal();
-        cout << "Total Amount: Rs" << total << endl;
+        cout << "Total Amount with Tax: Rs" << total << endl;
     }
+
+    static int getTotalBillsGenerated() { return totalBillsGenerated; }
 };
 
 int Bill::totalBillsGenerated = 0;
