@@ -57,7 +57,13 @@ public:
 
 int Item::totalItemsSold = 0;
 
-class Bill {
+// Abstract class for Bill display functionality
+class IBillDisplay {
+public:
+    virtual void display() const = 0; // Pure virtual function to enforce display implementation
+};
+
+class Bill : public IBillDisplay {
 private:
     Item** items;
     int itemCount;
@@ -116,7 +122,8 @@ public:
         return total;
     }
 
-    void displayBill() const {
+    // Implementing display function from IBillDisplay
+    void display() const override {
         cout << "\nBill Details:" << endl;
         for (int i = 0; i < itemCount; i++) {
             items[i]->displayItem();
@@ -144,7 +151,6 @@ int main() {
         new Item("Tacos", 1, 60.00),
         new Item("Nachos", 1, 45.00),
         new Item("Sushi", 1, 120.00),
-        new Item("Ramen", 1, 110.00),
         new Item("Curry", 1, 90.00),
         new Item("Biryani", 1, 130.00),
         new Item("Dosa", 1, 40.00),
@@ -180,7 +186,7 @@ int main() {
 
     } while (choice != menuSize + 1);
 
-    bill.displayBill();
+    bill.display();
     cout << "\nTotal items sold: " << Item::getTotalItemsSold() << endl;
     cout << "Total bills generated: " << Bill::getTotalBillsGenerated() << endl;
 
