@@ -151,7 +151,6 @@ int main() {
         new Item("Tacos", 1, 60.00),
         new Item("Nachos", 1, 45.00),
         new Item("Sushi", 1, 120.00),
-        new Item("Ramen", 1, 110.00),
         new Item("Curry", 1, 90.00),
         new Item("Biryani", 1, 130.00),
         new Item("Dosa", 1, 40.00),
