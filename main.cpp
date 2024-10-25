@@ -17,9 +17,12 @@ public:
         totalItemsSold += itemQuantity;
     }
 
+    ~Item() {}
+
     string getName() const {
         return name;
     }
+
     void setName(const string& itemName) {
         name = itemName;
     }
@@ -27,6 +30,7 @@ public:
     int getQuantity() const {
         return quantity;
     }
+
     void setQuantity(int itemQuantity) {
         if (itemQuantity >= 0) {
             quantity = itemQuantity;
@@ -36,6 +40,7 @@ public:
     float getPrice() const {
         return price;
     }
+
     void setPrice(float itemPrice) {
         if (itemPrice >= 0) {
             price = itemPrice;
@@ -57,10 +62,9 @@ public:
 
 int Item::totalItemsSold = 0;
 
-// Abstract class for Bill display functionality
 class IBillDisplay {
 public:
-    virtual void display() const = 0; // Pure virtual function to enforce display implementation
+    virtual void display() const = 0;
 };
 
 class Bill : public IBillDisplay {
@@ -86,6 +90,7 @@ public:
     int getItemCount() const {
         return itemCount;
     }
+
     void setItemCount(int count) {
         if (count >= 0 && count <= capacity) {
             itemCount = count;
@@ -95,6 +100,7 @@ public:
     int getCapacity() const {
         return capacity;
     }
+
     void setCapacity(int cap) {
         if (cap >= 0) {
             capacity = cap;
@@ -122,7 +128,6 @@ public:
         return total;
     }
 
-    // Implementing display function from IBillDisplay
     void display() const override {
         cout << "\nBill Details:" << endl;
         for (int i = 0; i < itemCount; i++) {
@@ -151,6 +156,7 @@ int main() {
         new Item("Tacos", 1, 60.00),
         new Item("Nachos", 1, 45.00),
         new Item("Sushi", 1, 120.00),
+        new Item("Ramen", 1, 110.00),
         new Item("Curry", 1, 90.00),
         new Item("Biryani", 1, 130.00),
         new Item("Dosa", 1, 40.00),
