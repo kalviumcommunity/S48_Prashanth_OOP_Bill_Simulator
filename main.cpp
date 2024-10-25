@@ -11,30 +11,47 @@ private:
 
 public:
     Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0) {
-        this->name = itemName;
-        this->quantity = itemQuantity;
-        this->price = itemPrice;
+        setName(itemName);
+        setQuantity(itemQuantity);
+        setPrice(itemPrice);
         totalItemsSold += itemQuantity;
     }
 
-    float getTotalPrice() const {
-        return this->quantity * this->price;
-    }
-
-    void displayItem() const {
-        cout << this->name << " - Quantity: " << this->quantity << ", Price per unit: Rs" << this->price << endl;
-    }
-
     string getName() const {
-        return this->name;
+        return name;
+    }
+    void setName(const string& itemName) {
+        name = itemName;
+    }
+
+    int getQuantity() const {
+        return quantity;
+    }
+    void setQuantity(int itemQuantity) {
+        if (itemQuantity >= 0) {
+            quantity = itemQuantity;
+        }
     }
 
     float getPrice() const {
-        return this->price;
+        return price;
+    }
+    void setPrice(float itemPrice) {
+        if (itemPrice >= 0) {
+            price = itemPrice;
+        }
     }
 
     static int getTotalItemsSold() {
         return totalItemsSold;
+    }
+
+    float getTotalPrice() const {
+        return quantity * price;
+    }
+
+    void displayItem() const {
+        cout << name << " - Quantity: " << quantity << ", Price per unit: Rs" << price << endl;
     }
 };
 
@@ -58,6 +75,28 @@ public:
             delete items[i];
         }
         delete[] items;
+    }
+
+    int getItemCount() const {
+        return itemCount;
+    }
+    void setItemCount(int count) {
+        if (count >= 0 && count <= capacity) {
+            itemCount = count;
+        }
+    }
+
+    int getCapacity() const {
+        return capacity;
+    }
+    void setCapacity(int cap) {
+        if (cap >= 0) {
+            capacity = cap;
+        }
+    }
+
+    static int getTotalBillsGenerated() {
+        return totalBillsGenerated;
     }
 
     void addItem(const Item& item) {
@@ -84,10 +123,6 @@ public:
         }
         float total = calculateTotal();
         cout << "Total Amount: Rs" << total << endl;
-    }
-
-    static int getTotalBillsGenerated() {
-        return totalBillsGenerated;
     }
 };
 
