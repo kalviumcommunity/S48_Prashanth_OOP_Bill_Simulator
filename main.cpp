@@ -20,18 +20,17 @@ private:
     static int totalItemsSold;
 
 public:
-    Item(string itemName = "", int itemQuantity = 0, float itemPrice = 0.0)
-        : Product(itemName, itemPrice), quantity(itemQuantity) {
+    Item(string itemName, float itemPrice) : Product(itemName, itemPrice), quantity(1) {
+        totalItemsSold += quantity;
+    }
+
+    Item(string itemName, int itemQuantity, float itemPrice) : Product(itemName, itemPrice), quantity(itemQuantity) {
         totalItemsSold += itemQuantity;
     }
 
     ~Item() {}
 
     int getQuantity() const { return quantity; }
-
-    void setQuantity(int itemQuantity) {
-        if (itemQuantity >= 0) quantity = itemQuantity;
-    }
 
     static int getTotalItemsSold() { return totalItemsSold; }
 
