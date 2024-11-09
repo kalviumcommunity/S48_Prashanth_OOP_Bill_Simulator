@@ -2,6 +2,11 @@
 #include <string>
 using namespace std;
 
+class IBillDisplay {
+public:
+    virtual void display() const = 0;
+};
+
 class Product {
 protected:
     string name;
@@ -17,35 +22,19 @@ public:
 class Item : public Product {
 private:
     int quantity;
-    static int totalItemsSold;
 
 public:
-    Item(string itemName, float itemPrice) : Product(itemName, itemPrice), quantity(1) {
-        totalItemsSold += quantity;
-    }
+    Item(string itemName, float itemPrice) : Product(itemName, itemPrice), quantity(1) {}
 
-    Item(string itemName, int itemQuantity, float itemPrice) : Product(itemName, itemPrice), quantity(itemQuantity) {
-        totalItemsSold += itemQuantity;
-    }
-
-    ~Item() {}
+    Item(string itemName, int itemQuantity, float itemPrice) : Product(itemName, itemPrice), quantity(itemQuantity) {}
 
     int getQuantity() const { return quantity; }
-
-    static int getTotalItemsSold() { return totalItemsSold; }
 
     float getTotalPrice() const { return quantity * price; }
 
     void displayItem() const {
         cout << name << " - Quantity: " << quantity << ", Price per unit: Rs" << price << endl;
     }
-};
-
-int Item::totalItemsSold = 0;
-
-class IBillDisplay {
-public:
-    virtual void display() const = 0;
 };
 
 class Tax {
@@ -64,6 +53,7 @@ private:
     int itemCount;
     int capacity;
     static int totalBillsGenerated;
+    static int totalItemsSold;
 
 public:
     Bill(int cap = 30) : itemCount(0), capacity(cap), Tax(0.1) {
@@ -76,11 +66,10 @@ public:
         delete[] items;
     }
 
-    int getItemCount() const { return itemCount; }
-
     void addItem(const Item& item) {
         if (itemCount < capacity) {
             items[itemCount] = new Item(item);
+            totalItemsSold += items[itemCount]->getQuantity();
             itemCount++;
         } else {
             cout << "Cannot add more items, bill is full!" << endl;
@@ -105,9 +94,11 @@ public:
     }
 
     static int getTotalBillsGenerated() { return totalBillsGenerated; }
+    static int getTotalItemsSold() { return totalItemsSold; }
 };
 
 int Bill::totalBillsGenerated = 0;
+int Bill::totalItemsSold = 0;
 
 int main() {
     Bill bill;
@@ -162,7 +153,7 @@ int main() {
     } while (choice != menuSize + 1);
 
     bill.display();
-    cout << "\nTotal items sold: " << Item::getTotalItemsSold() << endl;
+    cout << "\nTotal items sold: " << Bill::getTotalItemsSold() << endl;
     cout << "Total bills generated: " << Bill::getTotalBillsGenerated() << endl;
 
     for (int i = 0; i < menuSize; i++) {
