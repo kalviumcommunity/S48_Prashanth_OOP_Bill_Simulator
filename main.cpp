@@ -7,6 +7,11 @@ public:
     virtual void display() const = 0;
 };
 
+class ITaxCalculator {
+public:
+    virtual float calculateTax(float amount) const = 0;
+};
+
 class Product {
 protected:
     string name;
@@ -37,44 +42,28 @@ public:
     }
 };
 
-// Base Tax class
-class Tax {
+class Tax : public ITaxCalculator {
 protected:
     float taxRate;
 
 public:
     Tax(float rate = 0.1) : taxRate(rate) {}
 
-    virtual float calculateTax(float amount) const { return amount * taxRate; } // <- Made virtual to allow extensions
-};
-
-// Extended DiscountedTax class <- Added for OCP
-class DiscountedTax : public Tax {
-private:
-    float discountRate;
-
-public:
-    DiscountedTax(float rate, float discount) : Tax(rate), discountRate(discount) {}
-
-    float calculateTax(float amount) const override { // <- Overrides base calculateTax
-        float tax = amount * taxRate;
-        float discount = tax * discountRate;
-        return tax - discount;
+    float calculateTax(float amount) const override {
+        return amount * taxRate;
     }
 };
 
-class Bill : public IBillDisplay {
+class Bill : public IBillDisplay, public Tax {
 private:
     Item** items;
     int itemCount;
     int capacity;
-    Tax* taxStrategy; // <- Added to use dynamic tax strategies
     static int totalBillsGenerated;
     static int totalItemsSold;
 
 public:
-    Bill(int cap = 30, Tax* tax = new Tax()) // <- Default tax strategy
-        : itemCount(0), capacity(cap), taxStrategy(tax) {
+    Bill(int cap = 30) : itemCount(0), capacity(cap), Tax(0.1) {
         items = new Item*[capacity];
         totalBillsGenerated++;
     }
@@ -82,7 +71,6 @@ public:
     ~Bill() {
         for (int i = 0; i < itemCount; ++i) delete items[i];
         delete[] items;
-        delete taxStrategy; // <- Clean up tax strategy
     }
 
     void addItem(const Item& item) {
@@ -100,7 +88,7 @@ public:
         for (int i = 0; i < itemCount; i++) {
             total += items[i]->getTotalPrice();
         }
-        return total + taxStrategy->calculateTax(total); // <- Uses dynamic tax strategy
+        return total + calculateTax(total);
     }
 
     void display() const override {
@@ -120,10 +108,7 @@ int Bill::totalBillsGenerated = 0;
 int Bill::totalItemsSold = 0;
 
 int main() {
-    Tax* standardTax = new Tax(); // <- Standard tax strategy
-    Tax* discountedTax = new DiscountedTax(0.1, 0.2); // <- Discounted tax strategy
-
-    Bill bill(30, discountedTax); // <- Using discounted tax strategy
+    Bill bill;
 
     Item* menuItems[] = {
         new Item("Burger", 1, 55.00),
