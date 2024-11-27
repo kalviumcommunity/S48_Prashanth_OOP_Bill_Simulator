@@ -12,7 +12,7 @@ protected:
     string name;
     float price;
 
-public:
+public: 
     Product(string productName = "", float productPrice = 0.0) : name(productName), price(productPrice) {}
 
     string getName() const { return name; }
@@ -37,26 +37,28 @@ public:
     }
 };
 
-class Tax {
-protected:
+class TaxCalculator {
+private:
     float taxRate;
 
 public:
-    Tax(float rate = 0.1) : taxRate(rate) {}
+    TaxCalculator(float rate = 0.1) : taxRate(rate) {}
 
     float calculateTax(float amount) const { return amount * taxRate; }
 };
 
-class Bill : public IBillDisplay, public Tax {
+class Bill : public IBillDisplay {
 private:
     Item** items;
     int itemCount;
     int capacity;
+    TaxCalculator taxCalculator;
     static int totalBillsGenerated;
     static int totalItemsSold;
 
 public:
-    Bill(int cap = 30) : itemCount(0), capacity(cap), Tax(0.1) {
+    Bill(int cap = 30, float taxRate = 0.1) 
+        : itemCount(0), capacity(cap), taxCalculator(taxRate) {
         items = new Item*[capacity];
         totalBillsGenerated++;
     }
@@ -81,7 +83,7 @@ public:
         for (int i = 0; i < itemCount; i++) {
             total += items[i]->getTotalPrice();
         }
-        return total + calculateTax(total);
+        return total + taxCalculator.calculateTax(total);
     }
 
     void display() const override {
